@@ -6,10 +6,14 @@ from termcolor import colored
 
 # Replace with the correct URL
 limit = input('Top N Movies?:')
-url = 'https://yts.lt/api/v2/list_movies.json?sort_by=like_count&order_by=desc&limit=%s' %(limit,)
-resp = requests.get(url)
-myResponse = requests.get(url)
+sort = input('Sort by? (title, year, rating, peers, seeds, download_count, like_count, date_added)(default: like_count): ') or 'like_count'
+genre = input('Which genre? (Comedy/Sci-Fi/Horror/Romance/Action/Thriller/Drama/Mystery/Crime/Animation/Adventure/Fantasy/Superhero): ')
+minimum_rating = input('Minimum Rating?: ')
+
+url = 'https://yts.lt/api/v2/list_movies.json?sort_by=%s&order_by=desc&limit=%s&genre=%s&minimum_rating=%s' %(sort,limit,genre,minimum_rating)
 JSON_Output = input('Do you want to see JSON raw? Y/N: ')
+myResponse = requests.get(url)
+
 
 # For successful API call, response code will be 200 (OK)
 if(myResponse.ok):
@@ -40,6 +44,7 @@ if(myResponse.ok):
         title = CurrentMovieData['title']
         rating = CurrentMovieData['rating']
         summary = CurrentMovieData['summary']
+        year = CurrentMovieData['year']
         TorrentCounter = 0
         TorrentLoop = jData['data']['movies'][LoopCounter]['torrents']
         CurrentMovieTorrentData =TorrentLoop[TorrentCounter]
@@ -49,7 +54,7 @@ if(myResponse.ok):
 
         
         # Printers
-        print(colored('- Movie number', 'red'), colored(LoopCounter+1,'red'), colored('title is:','red'), colored(title, 'blue'), 'with a rating of', colored(rating, 'blue'), end= '\n\n')
+        print(colored('- Movie number', 'red'), colored(LoopCounter+1,'red'), colored('title is:','red'), colored(title, 'blue'), 'with a rating of', colored(rating, 'blue'),'released in',colored(year,'blue'), end= '\n\n')
         print(colored('Description: ','red'), summary, end= '\n\n')
         #TorrentInfo Loop
         for k in TorrentLoop:
